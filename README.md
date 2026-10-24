@@ -6,7 +6,7 @@ Anthropic の Claude ハッカソン「Built with Claude: Japan 2026」応募用
 詳しくは [tonari-no-mago.md](tonari-no-mago.md) を参照。応募文のたたき台は [application.md](application.md)。
 
 - 開始日: 2026-10-21
-- 状態: 企画フェーズ（未着手）
+- 状態: **終了**（2026-10-24。応募できなくなったため。コードは未着手のまま企画のみ）
 
 ## 1. ハッカソン情報（要記入）
 
