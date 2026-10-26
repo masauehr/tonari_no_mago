@@ -3,3 +3,7 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# 実在の文書・メッセージで試すための置き場と、その結果（個人情報が混ざりうるのでコミットしない）
+samples/
+eval/results/adhoc_*

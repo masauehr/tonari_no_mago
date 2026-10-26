@@ -92,3 +92,27 @@ def check_scam(case, result):
         "tactics_ok": tactics_ok, "advice_ok": advice_ok,
         "ok": verdict_ok and not asserted and not quotes and tactics_ok and advice_ok,
     }
+
+
+# ---------- 正解データのない実物での確認 ----------
+# 金額・日付・期間・割合・回数など、落ちると困りやすい数字つきの言葉
+FACT_PATTERN = re.compile(
+    r"\d[\d,]*(?:\.\d+)?\s*(?:万円|千円|円|%|％|割|回|錠|日以内|日前|日まで|か月|ヶ月|年|歳)"
+    r"|\d{1,2}月\d{1,2}日|\d{1,2}時(?:\d{1,2}分)?")
+
+
+def source_facts(source):
+    """原文から、金額・日付などの「落ちると困りやすい」言葉を重複なく取り出す。"""
+    seen, facts = set(), []
+    for m in FACT_PATTERN.finditer(simplify.normalize(source).replace(",", "")):
+        t = m.group(0)
+        if t not in seen:
+            seen.add(t)
+            facts.append(t)
+    return facts
+
+
+def missing_facts(source, output_text):
+    """原文にあるのに、出力に出てこない金額・日付などを返す（落としが悪いとは限らない。人が見て判断する）。"""
+    out = simplify.normalize(output_text).replace(",", "")
+    return [f for f in source_facts(source) if f not in out]

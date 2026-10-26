@@ -63,6 +63,24 @@ class ForbiddenTest(unittest.TestCase):
         self.assertEqual(find_forbidden(["10万円"], r), [])
 
 
+class MissingFactsTest(unittest.TestCase):
+    SOURCE = "年額142,800円。納期限は11月30日。第1期から第10期。受付は午前8時30分まで。"
+
+    def test_落ちた金額と日付を見つける(self):
+        from checks import missing_facts
+        got = missing_facts(self.SOURCE, "年額142,800円を払います")
+        self.assertIn("11月30日", got)
+        self.assertNotIn("142800円", got)
+
+    def test_全角や桁区切りの違いは同じとみなす(self):
+        from checks import missing_facts
+        self.assertEqual(missing_facts("納付額は14,280円です", "１４２８０円を納めます"), [])
+
+    def test_数字つきの言葉がなければ空(self):
+        from checks import source_facts
+        self.assertEqual(source_facts("お知らせです。窓口にお越しください。"), [])
+
+
 class PairsTest(unittest.TestCase):
     def _result(self, points):
         return {"summary": "", "key_points": list(points), "deadlines": [], "todo": [],
