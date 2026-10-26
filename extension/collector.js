@@ -25,6 +25,16 @@
     return r.bottom > 0 && r.right > 0 && r.top < innerHeight && r.left < innerWidth;
   };
 
+  // 画面の中心で、別の要素（ポップアップ等）にふさがれていないか
+  const isCovered = (el) => {
+    if (!inViewport(el)) return false;
+    const r = el.getBoundingClientRect();
+    const x = Math.min(Math.max(r.left + r.width / 2, 0), innerWidth - 1);
+    const y = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
+    const top = document.elementFromPoint(x, y);
+    return !!top && top !== el && !el.contains(top) && !top.contains(el);
+  };
+
   const labelOf = (el) => {
     const aria = el.getAttribute('aria-label');
     if (aria) return squash(aria);
@@ -97,6 +107,9 @@
 
   const collect = () => {
     document.querySelectorAll('[data-tnm-id]').forEach((e) => e.removeAttribute('data-tnm-id'));
+    // 前回のハイライトが残っていると判定を邪魔するので先に消す
+    const old = document.getElementById('tnm-overlay-root');
+    if (old) old.remove();
     let cands = [...document.querySelectorAll(SELECTOR)].filter((el) => {
       if (el.closest('#tnm-overlay-root')) return false;
       if (el.type === 'password') return false;
@@ -126,11 +139,15 @@
       }
       if (el.disabled) rec.disabled = true;
       if (!inViewport(el)) rec.offscreen = true;
+      if (isCovered(el)) rec.covered = true;
       return rec;
     });
     const headings = [...document.querySelectorAll('h1, h2, h3')]
       .filter(isVisible).slice(0, 8).map((h) => clip(squash(h.innerText), 50));
+    // 文字のない（アイコンだけの）操作対象。見分けるには画面の画像が要る
+    const unlabeled = elements.filter((e) => !e.label && ['ボタン', 'リンク'].includes(e.kind)).length;
     return {
+      unlabeled,
       url: location.origin + location.pathname,
       title: document.title,
       headings,

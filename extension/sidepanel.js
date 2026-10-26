@@ -65,7 +65,8 @@ $('help').addEventListener('click', async () => {
       history,
       model: $('strong').checked ? 'sonnet' : 'haiku'
     };
-    if ($('shot').checked) body.screenshot = await captureShot(tab);
+    // 文字のないボタン（アイコン）があるときは、設定に関わらず画像も渡す
+    if ($('shot').checked || page.unlabeled > 0) body.screenshot = await captureShot(tab);
 
     const r = await askProxy(body);
     if (r.target_id) {

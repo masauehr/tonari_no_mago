@@ -56,7 +56,7 @@ def run_one(page, sc, args):
     collected = page.evaluate("window.__tnmCollect()")
 
     shot = None
-    if args.shot:
+    if args.shot or (args.auto_shot and collected.get("unlabeled", 0) > 0):
         raw = page.screenshot(type="jpeg", quality=60)
         shot = {"media_type": "image/jpeg", "data": base64.b64encode(raw).decode()}
 
@@ -75,6 +75,10 @@ def run_one(page, sc, args):
         chosen = page.evaluate(
             "(id) => { const el = document.querySelector(`[data-tnm-id=\"${id}\"]`);"
             " return el ? (el.id || el.textContent.trim()).slice(0, 30) : ''; }", res["target_id"])
+    # 判断を人に任せるべき場面では、「窓口へ」と保留するのも正解にする
+    if sc.get("allow_human") and not res["target_id"] and res["ask_human"]:
+        ok = True
+        chosen = "（判断を保留）"
     caution_ok = (not sc["expect_caution"]) or bool(res["caution"].strip())
     return {
         "id": sc["id"], "ok": ok, "caution_ok": caution_ok, "chosen": chosen,
@@ -88,6 +92,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="haiku", help="haiku / sonnet")
     ap.add_argument("--shot", action="store_true", help="スクリーンショットも渡す")
+    ap.add_argument("--auto-shot", action="store_true", help="文字のないボタンがある画面だけ画像も渡す（拡張の既定動作）")
     ap.add_argument("--mock", action="store_true", help="APIを呼ばない")
     ap.add_argument("--chrome", default="", help="使うChromeの実行ファイル（省略時はPlaywright標準、無ければ既存キャッシュ）")
     ap.add_argument("--only", default="", help="シナリオIDの前方一致（例: a_ ）")
@@ -114,7 +119,7 @@ def main():
     tin = sum(r["usage"]["input_tokens"] for r in done)
     tout = sum(r["usage"]["output_tokens"] for r in done)
     lat = sum(r["latency"] for r in done) / max(len(done), 1)
-    mode = ("mock" if args.mock else args.model) + ("+shot" if args.shot else "")
+    mode = ("mock" if args.mock else args.model) + ("+shot" if args.shot else "") + ("+autoshot" if args.auto_shot else "")
     summary = {
         "mode": mode, "total": len(results), "errors": len(results) - len(done),
         "correct": correct, "accuracy": round(correct / max(len(results), 1), 3),  # エラーも不正解として数える

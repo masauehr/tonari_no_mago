@@ -52,6 +52,11 @@ class PromptTest(unittest.TestCase):
         self.assertIn("転入届の予約", text)
         self.assertIn("e2", text)
 
+    def test_文字のない要素とふさがれた要素を示す(self):
+        line = core.format_element({"id": "e9", "kind": "ボタン", "label": "", "covered": True})
+        self.assertIn("アイコン", line)
+        self.assertIn("ふさがれている", line)
+
     def test_やりたいこと未入力でも組み立てられる(self):
         self.assertIn("未入力", core.build_user_text(self.PAGE))
 
