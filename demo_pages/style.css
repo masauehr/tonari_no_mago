@@ -1,0 +1,22 @@
+body { margin: 0; font: 16px/1.7 sans-serif; color: #222; background: #f4f4f4; }
+header { background: var(--main, #2a6); color: #fff; padding: 12px 24px; }
+header .site { font-size: 22px; font-weight: bold; }
+header nav a, header .tools a, header .tools button { color: #fff; margin-right: 16px; }
+header .tools { float: right; }
+main { max-width: 860px; margin: 16px auto; padding: 16px 24px; background: #fff; }
+footer { max-width: 860px; margin: 0 auto 24px; padding: 8px 24px; font-size: 13px; color: #666; }
+footer a { margin-right: 12px; color: #666; }
+.steps { color: #666; font-size: 14px; margin-bottom: 8px; }
+.cards { display: flex; flex-wrap: wrap; gap: 12px; }
+.card { flex: 1 1 200px; border: 1px solid #ccc; border-radius: 8px; padding: 12px; }
+.banner { background: #fde68a; padding: 10px 14px; border-radius: 8px; margin: 12px 0; }
+.btn { display: inline-block; padding: 10px 22px; border: none; border-radius: 6px;
+       background: #2a6; color: #fff; font-size: 16px; text-decoration: none; cursor: pointer; }
+.btn.big { padding: 18px 40px; font-size: 22px; background: #f60; }
+.btn.sub { background: #888; }
+.btn.blue { background: #1a4fd6; padding: 16px 36px; font-size: 20px; }
+.small-link { font-size: 12px; color: #999; }
+table { border-collapse: collapse; width: 100%; }
+td, th { border: 1px solid #ddd; padding: 8px; text-align: left; }
+.row { margin: 10px 0; }
+.row label.name { display: inline-block; width: 9em; }

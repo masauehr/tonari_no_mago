@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "となりの孫",
+  "version": "0.1.0",
+  "description": "「困った」を押すと、次に押す場所を1つだけ光らせて教えます。",
+  "permissions": ["scripting", "sidePanel", "activeTab", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js" },
+  "side_panel": { "default_path": "sidepanel.html" },
+  "action": { "default_title": "となりの孫を開く" }
+}

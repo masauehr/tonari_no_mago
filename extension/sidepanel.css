@@ -1,0 +1,40 @@
+/* 高齢者向け：大きな文字・高いコントラスト・1画面1操作 */
+body {
+  margin: 0;
+  padding: 16px;
+  font: 18px/1.6 -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  color: #222;
+  background: #fffdf7;
+}
+h1 { margin: 0 0 12px; font-size: 24px; }
+.goal-label { display: block; font-size: 16px; margin-bottom: 4px; }
+#goal {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 18px;
+  padding: 10px;
+  border: 2px solid #888;
+  border-radius: 8px;
+}
+#help {
+  display: block;
+  width: 100%;
+  margin: 16px 0;
+  padding: 22px 0;
+  font-size: 32px;
+  font-weight: bold;
+  color: #fff;
+  background: #ff6a00;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+}
+#help:disabled { background: #bbb; cursor: wait; }
+#help:focus-visible { outline: 4px solid #1a4fd6; outline-offset: 3px; }
+#result { min-height: 3em; font-size: 22px; font-weight: bold; }
+#result .caution { margin-top: 8px; color: #b00020; font-size: 19px; }
+#result .error { color: #b00020; font-weight: normal; }
+#result .sub { margin-top: 8px; font-size: 15px; font-weight: normal; color: #555; }
+details { margin-top: 24px; font-size: 16px; }
+details label { display: block; margin: 8px 0; }
+.note { font-size: 14px; color: #555; }

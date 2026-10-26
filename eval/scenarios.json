@@ -1,0 +1,295 @@
+[
+  {
+    "id": "a_top",
+    "page": "a_top.html",
+    "goal": "引っ越してきたので、転入届の予約をしたい",
+    "expected": [
+      "#go-yoyaku"
+    ],
+    "setup": [],
+    "expect_caution": false,
+    "note": "カードのボタン文言が『予約へ進む』で、見出しの『手続きの予約』と別"
+  },
+  {
+    "id": "a_menu",
+    "page": "a_menu.html",
+    "goal": "引っ越してきたので、転入届の予約をしたい",
+    "expected": [
+      "#book-tenyu"
+    ],
+    "setup": [],
+    "expect_caution": false,
+    "note": "同じ文言『予約する』が4つ並ぶ。周りの文字で見分ける"
+  },
+  {
+    "id": "a_date_empty",
+    "page": "a_date.html",
+    "goal": "引っ越してきたので、転入届の予約をしたい",
+    "expected": [
+      "#d1",
+      "#d2",
+      "#d3"
+    ],
+    "setup": [],
+    "expect_caution": false,
+    "note": "必須が未入力。先に日付を選ぶ"
+  },
+  {
+    "id": "a_date_half",
+    "page": "a_date.html",
+    "goal": "引っ越してきたので、転入届の予約をしたい",
+    "expected": [
+      "#time"
+    ],
+    "setup": [
+      {
+        "check": "#d1"
+      }
+    ],
+    "expect_caution": false,
+    "note": "日付は選択済み、時間が未選択"
+  },
+  {
+    "id": "a_date_all",
+    "page": "a_date.html",
+    "goal": "引っ越してきたので、転入届の予約をしたい",
+    "expected": [
+      "#next"
+    ],
+    "setup": [
+      {
+        "check": "#d1"
+      },
+      {
+        "select": "#time",
+        "value": "10:00"
+      }
+    ],
+    "expect_caution": false,
+    "note": "すべて選択済み"
+  },
+  {
+    "id": "a_form_empty",
+    "page": "a_form.html",
+    "goal": "引っ越してきたので、転入届の予約をしたい",
+    "expected": [
+      "#name"
+    ],
+    "setup": [],
+    "expect_caution": false,
+    "note": "一番上の未入力は氏名"
+  },
+  {
+    "id": "a_form_filled",
+    "page": "a_form.html",
+    "goal": "引っ越してきたので、転入届の予約をしたい",
+    "expected": [
+      "#confirm"
+    ],
+    "setup": [
+      {
+        "fill": "#name",
+        "value": "山田 太郎"
+      },
+      {
+        "fill": "#tel",
+        "value": "090-0000-0000"
+      },
+      {
+        "check": "#consent"
+      }
+    ],
+    "expect_caution": false,
+    "note": "任意のメールは空のまま。次へ進んでよい"
+  },
+  {
+    "id": "a_confirm",
+    "page": "a_confirm.html",
+    "goal": "引っ越してきたので、転入届の予約をしたい",
+    "expected": [
+      "#submit"
+    ],
+    "setup": [],
+    "expect_caution": true,
+    "note": "確定操作。注意書きが付くこと"
+  },
+  {
+    "id": "b_top",
+    "page": "b_top.html",
+    "goal": "新米のお米を5キロ買いたい",
+    "expected": [
+      "#cat-rice"
+    ],
+    "setup": [],
+    "expect_caution": false,
+    "note": "目立つ広告ボタンに惑わされない"
+  },
+  {
+    "id": "b_item",
+    "page": "b_item.html",
+    "goal": "新米のお米を5キロ買いたい",
+    "expected": [
+      "#addcart",
+      "#buynow"
+    ],
+    "setup": [],
+    "expect_caution": false,
+    "note": "どちらでも可"
+  },
+  {
+    "id": "b_cart",
+    "page": "b_cart.html",
+    "goal": "新米のお米を5キロ買いたい",
+    "expected": [
+      "#checkout"
+    ],
+    "setup": [],
+    "expect_caution": false,
+    "note": "任意のクーポン欄は飛ばす"
+  },
+  {
+    "id": "b_ship_empty",
+    "page": "b_ship.html",
+    "goal": "新米のお米を5キロ買いたい",
+    "expected": [
+      "#name"
+    ],
+    "setup": [],
+    "expect_caution": false,
+    "note": "一番上の未入力はお名前"
+  },
+  {
+    "id": "b_ship_text",
+    "page": "b_ship.html",
+    "goal": "新米のお米を5キロ買いたい",
+    "expected": [
+      "#pay-cod",
+      "#pay-card",
+      "#pay-bank"
+    ],
+    "setup": [
+      {
+        "fill": "#name",
+        "value": "山田 太郎"
+      },
+      {
+        "fill": "#zip",
+        "value": "000-0000"
+      },
+      {
+        "fill": "#addr",
+        "value": "東京都千代田区 1-1"
+      },
+      {
+        "fill": "#tel",
+        "value": "090-0000-0000"
+      }
+    ],
+    "expect_caution": false,
+    "note": "文字欄は入力済み、支払い方法が未選択"
+  },
+  {
+    "id": "b_ship_all",
+    "page": "b_ship.html",
+    "goal": "新米のお米を5キロ買いたい",
+    "expected": [
+      "#to-confirm"
+    ],
+    "setup": [
+      {
+        "fill": "#name",
+        "value": "山田 太郎"
+      },
+      {
+        "fill": "#zip",
+        "value": "000-0000"
+      },
+      {
+        "fill": "#addr",
+        "value": "東京都千代田区 1-1"
+      },
+      {
+        "fill": "#tel",
+        "value": "090-0000-0000"
+      },
+      {
+        "check": "#pay-cod"
+      }
+    ],
+    "expect_caution": false,
+    "note": "すべて入力済み"
+  },
+  {
+    "id": "b_confirm",
+    "page": "b_confirm.html",
+    "goal": "新米のお米を5キロ買いたい",
+    "expected": [
+      "#order"
+    ],
+    "setup": [],
+    "expect_caution": true,
+    "note": "確定操作。注意書きが付くこと"
+  },
+  {
+    "id": "c_account",
+    "page": "c_account.html",
+    "goal": "月額の動画サービスをやめたい（解約したい）",
+    "expected": [
+      "#plan-link"
+    ],
+    "setup": [],
+    "expect_caution": false,
+    "note": "解約の入口は『ご契約内容』"
+  },
+  {
+    "id": "c_plan",
+    "page": "c_plan.html",
+    "goal": "月額の動画サービスをやめたい（解約したい）",
+    "expected": [
+      "#cancel-link"
+    ],
+    "setup": [],
+    "expect_caution": false,
+    "note": "目立つ割引ボタンではなく、小さな解約リンクを選ぶ"
+  },
+  {
+    "id": "c_reason_empty",
+    "page": "c_reason.html",
+    "goal": "月額の動画サービスをやめたい（解約したい）",
+    "expected": [
+      "#r1",
+      "#r2",
+      "#r3",
+      "#r4"
+    ],
+    "setup": [],
+    "expect_caution": false,
+    "note": "理由が未選択"
+  },
+  {
+    "id": "c_reason_filled",
+    "page": "c_reason.html",
+    "goal": "月額の動画サービスをやめたい（解約したい）",
+    "expected": [
+      "#continue"
+    ],
+    "setup": [
+      {
+        "check": "#r1"
+      }
+    ],
+    "expect_caution": false,
+    "note": "大きな『やっぱり続ける』ではなく小さな『解約を続ける』"
+  },
+  {
+    "id": "c_final",
+    "page": "c_final.html",
+    "goal": "月額の動画サービスをやめたい（解約したい）",
+    "expected": [
+      "#do-cancel"
+    ],
+    "setup": [],
+    "expect_caution": true,
+    "note": "確定操作。注意書きが付くこと"
+  }
+]

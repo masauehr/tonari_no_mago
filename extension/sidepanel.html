@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>となりの孫</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <h1>となりの孫</h1>
+
+  <label for="goal" class="goal-label">やりたいこと（書かなくても大丈夫です）</label>
+  <input id="goal" type="text" maxlength="100" placeholder="例：転入届の予約をしたい">
+
+  <button id="help" type="button">困った</button>
+
+  <div id="result" role="status" aria-live="polite"></div>
+
+  <details>
+    <summary>設定</summary>
+    <label><input id="strong" type="checkbox"> 難しい画面向けに、くわしく調べる（時間がかかります）</label>
+    <label><input id="shot" type="checkbox"> 画面の画像も使う</label>
+    <p class="note">画面の内容は、お使いのパソコン上の中継プログラムを通して Claude に送られます。入力欄に書いた内容は送りません。</p>
+  </details>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>

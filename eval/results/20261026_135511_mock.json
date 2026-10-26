@@ -1,0 +1,403 @@
+{
+  "summary": {
+    "mode": "mock",
+    "total": 20,
+    "errors": 0,
+    "correct": 3,
+    "accuracy": 0.15,
+    "caution_ok": "0/3",
+    "avg_latency_s": 0.0,
+    "input_tokens": 0,
+    "output_tokens": 0
+  },
+  "results": [
+    {
+      "id": "a_top",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "LINEで通知を受け取る（友だち追加）",
+      "expected": [
+        "#go-yoyaku"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_menu",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "",
+      "expected": [
+        "#book-tenyu"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": true,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 14
+    },
+    {
+      "id": "a_date_empty",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "next",
+      "expected": [
+        "#d1",
+        "#d2",
+        "#d3"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_date_half",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "next",
+      "expected": [
+        "#time"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_date_all",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "next",
+      "expected": [
+        "#next"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_form_empty",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "confirm",
+      "expected": [
+        "#name"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_form_filled",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "confirm",
+      "expected": [
+        "#confirm"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_confirm",
+      "ok": false,
+      "caution_ok": false,
+      "chosen": "",
+      "expected": [
+        "#submit"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": true,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 12
+    },
+    {
+      "id": "b_top",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "検索",
+      "expected": [
+        "#cat-rice"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 21
+    },
+    {
+      "id": "b_item",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "検索",
+      "expected": [
+        "#addcart",
+        "#buynow"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 18
+    },
+    {
+      "id": "b_cart",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "検索",
+      "expected": [
+        "#checkout"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 18
+    },
+    {
+      "id": "b_ship_empty",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "検索",
+      "expected": [
+        "#name"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 21
+    },
+    {
+      "id": "b_ship_text",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "検索",
+      "expected": [
+        "#pay-cod",
+        "#pay-card",
+        "#pay-bank"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 21
+    },
+    {
+      "id": "b_ship_all",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "検索",
+      "expected": [
+        "#to-confirm"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 21
+    },
+    {
+      "id": "b_confirm",
+      "ok": false,
+      "caution_ok": false,
+      "chosen": "検索",
+      "expected": [
+        "#order"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "c_account",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "",
+      "expected": [
+        "#plan-link"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": true,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 15
+    },
+    {
+      "id": "c_plan",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "",
+      "expected": [
+        "#cancel-link"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": true,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 13
+    },
+    {
+      "id": "c_reason_empty",
+      "ok": false,
+      "caution_ok": true,
+      "chosen": "continue",
+      "expected": [
+        "#r1",
+        "#r2",
+        "#r3",
+        "#r4"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 15
+    },
+    {
+      "id": "c_reason_filled",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "continue",
+      "expected": [
+        "#continue"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 15
+    },
+    {
+      "id": "c_final",
+      "ok": false,
+      "caution_ok": false,
+      "chosen": "",
+      "expected": [
+        "#do-cancel"
+      ],
+      "reason": "（ダミー）ここを押します",
+      "confidence": "low",
+      "caution": "",
+      "ask_human": true,
+      "latency": 0.0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "n_elements": 11
+    }
+  ]
+}

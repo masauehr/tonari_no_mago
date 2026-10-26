@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>日時の選択 - さくら市 オンライン窓口（デモ）</title>
+<link rel="stylesheet" href="style.css">
+<style>:root { --main: #1b7a4b; }</style>
+</head>
+<body>
+<header>
+  <div class="tools"></div>
+  <div class="site"><a href="a_top.html" style="color:#fff;text-decoration:none">さくら市 オンライン窓口</a></div>
+  <nav><a href="dummy.html">ホーム</a><a href="dummy.html">くらしの情報</a><a href="dummy.html">防災情報</a><a href="dummy.html">イベント</a><a href="dummy.html">市政情報</a></nav>
+</header>
+<main>
+<div class="steps">① 日時 ＞ ② 情報入力 ＞ ③ 確認 ＞ ④ 完了</div>
+<h1>予約日時の選択</h1>
+<form action="a_form.html">
+  <div class="row"><strong>希望日（必須）</strong><br>
+    <label><input type="radio" id="d1" name="date" value="1104" required> 11月4日(水)</label><br>
+    <label><input type="radio" id="d2" name="date" value="1105"> 11月5日(木)</label><br>
+    <label><input type="radio" id="d3" name="date" value="1106"> 11月6日(金)</label>
+  </div>
+  <div class="row"><label for="time"><strong>希望時間（必須）</strong></label>
+    <select id="time" name="time" required>
+      <option value="">選択してください</option><option>09:00</option><option>10:00</option><option>11:00</option>
+    </select>
+  </div>
+  <p><a class="btn sub" href="a_menu.html">戻る</a> <button id="next" class="btn" type="submit">次へ</button></p>
+</form>
+
+</main>
+<footer>
+  <a href="dummy.html">プライバシーポリシー</a><a href="dummy.html">サイトマップ</a>
+  <a href="dummy.html">アクセシビリティ</a><a href="dummy.html">お問い合わせ</a>
+  <div>これは「となりの孫」の検証用に作った架空のデモサイトです。</div>
+</footer>
+</body>
+</html>

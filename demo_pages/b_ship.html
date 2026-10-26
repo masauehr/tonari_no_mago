@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>お届け先 - やまびこ商店（デモ）</title>
+<link rel="stylesheet" href="style.css">
+<style>:root { --main: #b5421f; }</style>
+</head>
+<body>
+<header>
+  <div class="tools"><form action="dummy.html" style="display:inline"><input name="q" placeholder="商品を探す"><button type="submit">検索</button></form> <a href="dummy.html">ログイン</a> <a href="dummy.html">カート(1)</a></div>
+  <div class="site"><a href="b_top.html" style="color:#fff;text-decoration:none">やまびこ商店</a></div>
+  <nav><a href="dummy.html">トップ</a><a href="dummy.html">新着</a><a href="dummy.html">セール</a><a href="dummy.html">ご利用ガイド</a></nav>
+</header>
+<main>
+<h1>お届け先とお支払い</h1>
+<form action="b_confirm.html">
+  <div class="row"><label class="name" for="name">お名前（必須）</label><input id="name" name="name" required></div>
+  <div class="row"><label class="name" for="zip">郵便番号（必須）</label><input id="zip" name="zip" required></div>
+  <div class="row"><label class="name" for="addr">住所（必須）</label><input id="addr" name="addr" required></div>
+  <div class="row"><label class="name" for="tel">電話番号（必須）</label><input id="tel" name="tel" required></div>
+  <div class="row"><strong>お支払い方法（必須）</strong><br>
+    <label><input type="radio" id="pay-cod" name="pay" value="cod" required> 代金引換</label>
+    <label><input type="radio" id="pay-card" name="pay" value="card"> クレジットカード</label>
+    <label><input type="radio" id="pay-bank" name="pay" value="bank"> 銀行振込</label></div>
+  <p><button id="to-confirm" class="btn" type="submit">注文内容を確認する</button></p>
+</form>
+
+</main>
+<footer>
+  <a href="dummy.html">プライバシーポリシー</a><a href="dummy.html">サイトマップ</a>
+  <a href="dummy.html">アクセシビリティ</a><a href="dummy.html">お問い合わせ</a>
+  <div>これは「となりの孫」の検証用に作った架空のデモサイトです。</div>
+</footer>
+</body>
+</html>
