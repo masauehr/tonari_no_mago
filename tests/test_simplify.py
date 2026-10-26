@@ -63,5 +63,32 @@ class ForbiddenTest(unittest.TestCase):
         self.assertEqual(find_forbidden(["10万円"], r), [])
 
 
+class PairsTest(unittest.TestCase):
+    def _result(self, points):
+        return {"summary": "", "key_points": list(points), "deadlines": [], "todo": [],
+                "bring": [], "cautions": [], "human_note": ""}
+
+    def test_同じ文に両方あれば対応が取れている(self):
+        from checks import find_missing_pairs
+        r = self._result(["現役並み所得者（課税所得145万円以上）は3割です"])
+        self.assertEqual(find_missing_pairs([("3割", "145万円")], r), [])
+
+    def test_別の項目に分かれていたら対応なし(self):
+        from checks import find_missing_pairs
+        r = self._result(["3割の方がいます", "145万円という基準があります"])
+        self.assertEqual(find_missing_pairs([("3割", "145万円")], r), ["3割と145万円の対応"])
+
+    def test_言い換え候補のどれかがあればよい(self):
+        from checks import find_missing_pairs
+        r = self._result(["二重に申し込むと無効になります"])
+        self.assertEqual(find_missing_pairs([("無効", ["重複", "二重"])], r), [])
+        self.assertEqual(find_missing_pairs([("無効", ["重複"])], r), ["無効と重複の対応"])
+
+    def test_桁区切りや全角の違いは同じとみなす(self):
+        from checks import find_missing_pairs
+        r = self._result(["外来は１８，０００円です"])
+        self.assertEqual(find_missing_pairs([("18,000円", "外来")], r), [])
+
+
 if __name__ == "__main__":
     unittest.main()

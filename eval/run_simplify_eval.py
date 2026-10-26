@@ -23,7 +23,7 @@ sys.path.insert(0, str(ROOT / "eval"))
 import core  # noqa: E402
 import simplify  # noqa: E402
 from playwright.sync_api import sync_playwright  # noqa: E402
-from checks import find_forbidden  # noqa: E402
+from checks import find_forbidden, find_missing_pairs  # noqa: E402
 from run_eval import launch_browser  # noqa: E402
 
 COLLECTOR = ROOT / "extension" / "collector.js"
@@ -44,6 +44,7 @@ def check(case, source, result):
             missing.append(item if isinstance(item, str) else "/".join(item))
 
     forbidden = find_forbidden(case["forbid"], result)
+    missing += find_missing_pairs(case.get("pairs", []), result)
     bad_numbers = simplify.new_numbers(source, simplify.flatten(result))
 
     format_problems = []
@@ -69,10 +70,17 @@ def main():
     ap.add_argument("--model", default="haiku", help="haiku / sonnet")
     ap.add_argument("--mock", action="store_true", help="APIを呼ばない")
     ap.add_argument("--show", action="store_true", help="やさしく直した内容も表示する")
+    ap.add_argument("--rescore", default="", help="保存済みの結果JSONを、今の検査で採点し直す（APIは呼ばない）")
     ap.add_argument("--chrome", default="")
     args = ap.parse_args()
 
     cases = json.loads((ROOT / "eval" / "simplify_cases.json").read_text(encoding="utf-8"))
+    saved = {}
+    if args.rescore:
+        old = json.loads(Path(args.rescore).read_text(encoding="utf-8"))
+        saved = {r["id"]: {**r["result"], "latency": r["latency"], "usage": r["usage"]}
+                 for r in old["results"] if "result" in r}
+        cases = [c for c in cases if c["id"] in saved]
     results = []
     with sync_playwright() as p:
         browser = launch_browser(p, args.chrome)
@@ -82,7 +90,10 @@ def main():
             page.add_script_tag(path=str(COLLECTOR))
             doc = page.evaluate("window.__tnmExtract()")
             try:
-                res = simplify.simplify(doc, model=args.model, mock=args.mock)
+                if args.rescore:
+                    res = saved[case["id"]]
+                else:
+                    res = simplify.simplify(doc, model=args.model, mock=args.mock)
             except core.GuideError as e:
                 results.append({"id": case["id"], "ok": False, "error": str(e)})
                 print(f"× {case['id']:<10} {e}", flush=True)
@@ -109,7 +120,8 @@ def main():
 
     done = [r for r in results if "error" not in r]
     summary = {
-        "mode": "mock" if args.mock else args.model + ("-cli" if core.backend() == "cli" else ""), "total": len(results),
+        "mode": ("rescore" if args.rescore else "mock" if args.mock
+                 else args.model + ("-cli" if core.backend() == "cli" else "")), "total": len(results),
         "errors": len(results) - len(done), "ok": sum(r["ok"] for r in done),
         "avg_latency_s": round(sum(r["latency"] for r in done) / max(len(done), 1), 2),
         "input_tokens": sum(r["usage"]["input_tokens"] for r in done),
