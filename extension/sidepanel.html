@@ -26,6 +26,15 @@
     <div id="easy-body"></div>
   </div>
 
+  <section id="scam-box">
+    <h2>あやしいか調べる</h2>
+    <label for="scam-text" class="goal-label">届いたメッセージを貼り付けてください（メール・SMS・LINEなど）</label>
+    <textarea id="scam-text" rows="4" maxlength="4000" placeholder="ここに貼り付け"></textarea>
+    <button id="scam-msg-btn" type="button" class="scam-btn">貼った文を調べる</button>
+    <button id="scam-page-btn" type="button" class="scam-btn sub">開いているページを調べる</button>
+    <div id="scam-result" role="status" aria-live="polite"></div>
+  </section>
+
   <details>
     <summary>設定</summary>
     <label><input id="strong" type="checkbox"> 難しい画面向けに、くわしく調べる（時間がかかります）</label>

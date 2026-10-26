@@ -654,6 +654,30 @@ simplify_case("h_medicine", "h_medicine.html",
               pairs=[("1回1錠", "1日3回"), ("2回分", "飲んではいけ"), ("黒い便", "やめ")],
               note="薬の説明書。数字（1回1錠・1日3回・4時間・2回分）が命に関わるので厳密に。誤った量を書かない")
 
+
+# ---- あやしいか調べる用の架空ページ（実在の会社・組織とは無関係）----
+SITE_K = {"name": "デモ：あやしい画面（架空）", "color": "#8e0000", "top": "k_virus.html"}
+
+
+def K(name, title, main):
+    pages[name] = layout(SITE_K, title, main, ["ホーム"])
+
+
+K("k_virus.html", "警告", """\
+<h1 style="color:#c00">警告！ウイルスに感染しています！</h1>
+<p style="font-size:22px">お使いのパソコンはウイルスに感染しています！個人情報が流出しています！</p>
+<p style="font-size:22px">今すぐ下記のサポートセンターにお電話ください。</p>
+<p style="font-size:34px"><b>0120-000-000</b></p>
+<p style="font-size:22px">この画面を閉じないでください。閉じるとデータがすべて消去されます。</p>
+<p class="small-link">※これは「となりの孫」の検証用に作った架空のページです。</p>
+""")
+K("k_parcel.html", "お届けのお知らせ", """\
+<h1>【さくら宅配】お届けのお知らせ</h1>
+<p>お荷物のお届けにあがりましたが不在のため持ち帰りました。下記より再配達のご依頼をお願いします。24時間以内にご連絡がない場合、荷物は返送されます。</p>
+<p><a class="btn big" href="dummy.html">再配達を依頼する</a></p>
+<p class="small-link">※これは「となりの孫」の検証用に作った架空のページです。</p>
+""")
+
 pages["dummy.html"] = """\
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><title>デモ用ページ</title></head>

@@ -17,6 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import core  # noqa: E402
+import scamcheck  # noqa: E402
 import simplify  # noqa: E402
 
 HOST = "127.0.0.1"
@@ -74,10 +75,18 @@ class Handler(BaseHTTPRequestHandler):
               f"in={usage['input_tokens']} out={usage['output_tokens']} model={result['model']}", flush=True)
         self._send(200, result)
 
+    def _scamcheck(self, req, started):
+        doc = {"text": str(req["text"]), "source": str(req.get("source", ""))}
+        result = scamcheck.check(doc, model=req.get("model", "haiku"), mock=self.mock)
+        usage = result["usage"]
+        print(f"POST /scamcheck 200 {time.time() - started:.1f}s verdict={result['verdict']} "
+              f"in={usage['input_tokens']} out={usage['output_tokens']} model={result['model']}", flush=True)
+        self._send(200, result)
+
     def do_POST(self):
         if not self._origin_ok():
             return self._send(403, {"error": "許可されていない呼び出し元です"})
-        if self.path not in ("/guide", "/simplify"):
+        if self.path not in ("/guide", "/simplify", "/scamcheck"):
             return self._send(404, {"error": "見つかりません"})
         length = int(self.headers.get("Content-Length") or 0)
         if length <= 0 or length > MAX_BODY:
@@ -87,6 +96,8 @@ class Handler(BaseHTTPRequestHandler):
             req = json.loads(self.rfile.read(length).decode("utf-8"))
             if self.path == "/simplify":
                 return self._simplify(req, started)
+            if self.path == "/scamcheck":
+                return self._scamcheck(req, started)
             page = req["page"]
             if not isinstance(page.get("elements"), list):
                 raise ValueError("elements がありません")

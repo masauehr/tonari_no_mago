@@ -165,3 +165,66 @@ $('speak').addEventListener('click', () => {
   u.rate = 0.9;
   speechSynthesis.speak(u);
 });
+
+// ---------- あやしいか調べる ----------
+const VERDICT_TEXT = {
+  danger: ['あぶない可能性が高いです', ''],
+  caution: ['注意してください', ''],
+  no_findings: ['あやしい点は見つかりませんでした', 'ただし、安全とは言い切れません。迷ったら、下の相談先に聞いてください。']
+};
+
+const renderScam = (r) => {
+  const [title, note] = VERDICT_TEXT[r.verdict] || VERDICT_TEXT.caution;
+  const html = [`<div class="verdict ${esc(r.verdict)}">${esc(title)}${note ? `<small>${esc(note)}</small>` : ''}</div>`];
+  if (r.summary) html.push(`<p>${esc(r.summary)}</p>`);
+  if (r.ask_human) {
+    html.push('<div class="urgent">すでにお金を払った、番号を教えた、入力してしまったときは、すぐに銀行や警察に連絡してください。</div>');
+  }
+  if (r.reasons.length) {
+    html.push('<h3>そう思った理由</h3><ul>' + r.reasons.map((x) =>
+      `<li>${esc(x.point)}${x.quote ? `<span class="quote">文中: 「${esc(x.quote)}」</span>` : ''}</li>`).join('') + '</ul>');
+  }
+  if (r.tactics.length) html.push('<h3>よくある手口</h3><div class="chips">' + r.tactics.map((t) => `<span>${esc(t)}</span>`).join('') + '</div>');
+  if (r.what_to_do.length) html.push('<h3>どうすればよいか</h3><ul>' + r.what_to_do.map((x) => `<li>${esc(x)}</li>`).join('') + '</ul>');
+  html.push('<div class="help">迷ったら、まずご家族に相談しましょう。<br>消費者ホットライン <b>188</b>／警察相談専用電話 <b>#9110</b></div>');
+  $('scam-result').innerHTML = html.join('');
+};
+
+const runScam = async (button, getDoc) => {
+  const buttons = [$('scam-msg-btn'), $('scam-page-btn')];
+  buttons.forEach((b) => { b.disabled = true; });
+  $('scam-result').textContent = '調べています…';
+  try {
+    const doc = await getDoc();
+    const res = await fetch(`${PROXY}/scamcheck`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: doc.text, source: doc.source, model: $('strong').checked ? 'sonnet' : 'haiku' })
+    }).catch(() => { throw new Error('中継プログラムに接続できません。ご家族に proxy/server.py の起動を確認してもらってください。'); });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || '調べられませんでした。');
+    renderScam(json);
+  } catch (e) {
+    $('scam-result').innerHTML = `<span class="error">${esc(e.message)}</span>`;
+  } finally {
+    buttons.forEach((b) => { b.disabled = false; });
+  }
+};
+
+$('scam-msg-btn').addEventListener('click', () => runScam($('scam-msg-btn'), async () => {
+  const text = $('scam-text').value.trim();
+  if (!text) throw new Error('調べたいメッセージを、上の枠に貼り付けてください。');
+  return { text, source: 'message' };
+}));
+
+$('scam-page-btn').addEventListener('click', () => runScam($('scam-page-btn'), async () => {
+  const tab = await activeTab();
+  try {
+    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['collector.js'] });
+    const [{ result }] = await chrome.scripting.executeScript({
+      target: { tabId: tab.id }, func: () => window.__tnmExtract()
+    });
+    return { text: `${result.title}\n${result.text}`, source: 'page' };
+  } catch (e) {
+    throw new Error('このページでは使えません。ふつうのホームページで試してください。');
+  }
+}));
