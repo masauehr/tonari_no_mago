@@ -62,7 +62,7 @@ class Handler(BaseHTTPRequestHandler):
         if not self._origin_ok():
             return self._send(403, {"error": "許可されていない呼び出し元です"})
         if self.path == "/health":
-            return self._send(200, {"ok": True, "mock": self.mock,
+            return self._send(200, {"ok": True, "mock": self.mock, "backend": core.backend(),
                                     "has_key": bool(core.load_api_key())})
         self._send(404, {"error": "見つかりません"})
 
@@ -118,7 +118,12 @@ def main():
     args = parser.parse_args()
     Handler.mock = args.mock
     server = ThreadingHTTPServer((HOST, args.port), Handler)
-    mode = "モック" if args.mock else ("APIキーあり" if core.load_api_key() else "APIキー未設定")
+    if args.mock:
+        mode = "モック"
+    elif core.backend() == "cli":
+        mode = "Claude CLI経由（サブスク）"
+    else:
+        mode = "APIキーあり" if core.load_api_key() else "APIキー未設定"
     print(f"となりの孫プロキシ: http://{HOST}:{args.port} ({mode})", flush=True)
     try:
         server.serve_forever()

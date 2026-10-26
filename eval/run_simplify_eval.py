@@ -109,7 +109,7 @@ def main():
 
     done = [r for r in results if "error" not in r]
     summary = {
-        "mode": "mock" if args.mock else args.model, "total": len(results),
+        "mode": "mock" if args.mock else args.model + ("-cli" if core.backend() == "cli" else ""), "total": len(results),
         "errors": len(results) - len(done), "ok": sum(r["ok"] for r in done),
         "avg_latency_s": round(sum(r["latency"] for r in done) / max(len(done), 1), 2),
         "input_tokens": sum(r["usage"]["input_tokens"] for r in done),

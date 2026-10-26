@@ -119,7 +119,7 @@ def main():
     tin = sum(r["usage"]["input_tokens"] for r in done)
     tout = sum(r["usage"]["output_tokens"] for r in done)
     lat = sum(r["latency"] for r in done) / max(len(done), 1)
-    mode = ("mock" if args.mock else args.model) + ("+shot" if args.shot else "") + ("+autoshot" if args.auto_shot else "")
+    mode = ("mock" if args.mock else args.model + ("-cli" if core.backend() == "cli" else "")) + ("+shot" if args.shot else "") + ("+autoshot" if args.auto_shot else "")
     summary = {
         "mode": mode, "total": len(results), "errors": len(results) - len(done),
         "correct": correct, "accuracy": round(correct / max(len(results), 1), 3),  # エラーも不正解として数える

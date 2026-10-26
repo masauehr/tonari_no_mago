@@ -41,6 +41,7 @@ cp .env.example .env      # ANTHROPIC_API_KEY を記入（コミット禁止）
 ### プロキシを起動
 ```
 python3 proxy/server.py          # 本番（APIキーが必要）
+TNM_BACKEND=cli python3 proxy/server.py   # Claude CLI経由（サブスク。APIキー不要・API残高を使わない）
 python3 proxy/server.py --mock   # APIなしの動作確認
 ```
 `127.0.0.1:8787` だけで待ち受け、Origin が `chrome-extension://` 以外の呼び出しは拒否する。
@@ -60,6 +61,7 @@ python3 tools/build_demo.py                                  # デモページ�
 .venv/bin/python eval/run_eval.py --model sonnet
 .venv/bin/python eval/run_eval.py --mock                     # APIなし（下限の目安）
 .venv/bin/python eval/run_simplify_eval.py --model haiku     # やさしい表示の評価（--show で中身も表示）
+TNM_BACKEND=cli .venv/bin/python eval/run_eval.py --model haiku --auto-shot   # CLI経由で評価（他の評価も同様）
 python3 -m unittest discover -s tests                        # 単体テスト
 ```
 結果は `eval/results/` に JSON で保存される。
@@ -128,10 +130,30 @@ python3 -m unittest discover -s tests                        # 単体テスト
 - Haiku は「30,000円」を要約で「3万円」と言い換えた（意味は正しいが、数字は原文どおりというルールからは外れる。要点には「30,000円」も残っていた）。機械検査では拾えない種類の揺れ
 - 5件・各1回なので、傾向を見る段階。やさしさ（読みやすさ）は機械検査していない。実機で読んで確かめる
 
+## Claude CLI 経由（サブスク）への切り替え
+API のクレジット残高が不足したため、`TNM_BACKEND=cli` で Claude Code CLI（`claude -p`）経由でも動くようにした。既定は API のまま（残高が戻ればそのまま使える）。
+- 仕組み: `proxy/core.py` の `call_tool` だけが分岐する。収集・プロンプト・ハイライト・評価は共通。構造化出力は `--json-schema`（ツールの入力スキーマをそのまま渡す）、入力は `--input-format stream-json`（**スクリーンショットも渡せる**）
+- 余計な機能は使わせない: `--tools ""`、`--system-prompt` で置き換え、設定・MCP・スキルを読み込まない。`--bare` は OAuth（サブスク認証）を読まないため使えない。モデルは `claude-haiku-5-5` / `claude-sonnet-5-5` を明示（警告 `unrecognized_model` が標準エラーに出るが、指定どおりのモデルで動くことを確認済み）
+- 思考量は `--effort low`（`TNM_CLI_EFFORT` で変更可）。1回の待ちは60秒（`TNM_CLI_TIMEOUT`）で、時間切れは別プロセスグループごと強制終了して1回だけやり直す（初回評価で2件、300秒超の停止が出たため。修正後は再発せず）
+
+### CLI 経由の結果（2026-10-26・各1回）
+| 評価 | 構成 | 結果 | 応答（中央値／最大） |
+|------|------|------|------|
+| 画面ガイド32件 | Haiku・文字情報のみ | 31/32（誤答: e_icon_nolabel） | 4.2秒／6.6秒 |
+| 画面ガイド32件 | Haiku＋自動画像 | 32/32（修正前の初回） | 約4秒／6.8秒 |
+| 画面ガイド32件 | Sonnet＋自動画像 | 32/32 | 4.1秒／7.1秒 |
+| やさしい表示5件 | Haiku | 5/5 | 7.3秒／9.8秒 |
+| やさしい表示5件 | Sonnet | 5/5 | 7.1秒／9.1秒 |
+
+- 精度は API 経由と同等（画面ガイド 30〜32/32、やさしい表示 5/5）。アイコンだけのボタンは、画像が付く構成でだけ正解になる点も同じ
+- **応答は API 経由より遅い**: 画面ガイドは約1.3秒 → 約4秒、やさしい表示は約3.5秒 → 約7秒。CLI の起動などの固定の待ちが支配的で、Haiku と Sonnet でほとんど差が出ない。「困った」を押してから約4秒待つ体験になる
+- サブスクの利用枠を消費する。評価を回すと枠を使うので、回数に注意
+- 入力トークンが多く見えるのは、CLI が自動で付けるキャッシュ分を合算しているため（API 版と単純比較はできない）
+
 ## 現在の状況（2026-10-26）
 - 画面ガイドとやさしい表示のどちらも実装済み。画面ガイドは実APIと Chrome 実機で確認済み
 - **やさしい表示の Chrome 実機確認は未実施**（サイドパネルの表示・文字サイズ・読み上げ）。評価は Playwright で本文抽出し、API 結果を検査している
-- **Anthropic APIのクレジット残高が不足**（2026-10-26 時点）。実APIの再評価は残高を補充するまでできない。API 消費が多い場合は Claude CLI（`claude -p`）経由へ切り替えを検討する
+- **Anthropic APIのクレジット残高が不足**（2026-10-26 時点）のため、実運用は当面 `TNM_BACKEND=cli`（サブスク経由）で行う。残高が戻れば API 経由（既定）の方が速い
 - 評価は自作の架空文書のみ。実在の文書では画面の内容が Claude に送られる点に注意
 - 次: 実機確認 → 長い文章・表の多い文書・古い言い回しなどのケース追加 → 詐欺文面判定（余力）
 

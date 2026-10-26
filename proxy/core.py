@@ -6,6 +6,9 @@
 import json
 import os
 import re
+import signal
+import subprocess
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -164,6 +167,99 @@ class GuideError(Exception):
     """利用者に見せられる形のエラー。"""
 
 
+def backend():
+    """呼び出し方式。api（既定）または cli（Claude Code CLI＝サブスク経由）。"""
+    return os.environ.get("TNM_BACKEND", "api").strip().lower()
+
+
+def ensure_credentials():
+    """API方式のときだけ APIキーを要求する。キーを返す（CLI方式では空文字）。"""
+    if backend() == "cli":
+        return ""
+    key = load_api_key()
+    if not key:
+        raise GuideError("APIキーが未設定です。環境変数 ANTHROPIC_API_KEY か .env を設定してください。")
+    return key
+
+
+def _cli_message(body):
+    """API形式の最初のユーザーメッセージを、CLIの stream-json 入力にする。"""
+    content = body["messages"][0]["content"]
+    if isinstance(content, str):
+        content = [{"type": "text", "text": content}]
+    return json.dumps({"type": "user", "message": {"role": "user", "content": content}},
+                      ensure_ascii=False)
+
+
+def _run_cli(cmd, text, timeout):
+    """CLIを別プロセスグループで実行し、時間切れならグループごと強制終了する。
+
+    subprocess.run(timeout=…) は、CLIが孫プロセスを残すとパイプが閉じるまで戻らないことがあるため使わない。
+    戻り値: (stdout, stderr)。時間切れなら None。
+    """
+    proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            text=True, cwd=tempfile.gettempdir(), start_new_session=True)
+    try:
+        return proc.communicate(input=text, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        try:
+            proc.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            pass
+        return None
+
+
+def _call_tool_cli(body, required_key):
+    """Claude Code CLI（-p）で構造化出力を得る。
+
+    ツールは全部無効にし、システムプロンプトを置き換え、設定・MCP・スキルを読み込まない。
+    --bare は OAuth（サブスク認証）を読まないため使えない。
+    構造化出力は --json-schema（ツールの入力スキーマをそのまま渡す）で得る。
+    通常は数秒で返るので、1回の待ちは60秒（TNM_CLI_TIMEOUT）までとし、時間切れは1回だけやり直す。
+    """
+    timeout = float(os.environ.get("TNM_CLI_TIMEOUT", "60"))
+    schema = body["tools"][0]["input_schema"]
+    cmd = [
+        "claude", "-p", "--model", body["model"], "--effort", os.environ.get("TNM_CLI_EFFORT", "low"),
+        "--tools", "", "--system-prompt", body["system"],
+        "--input-format", "stream-json", "--output-format", "stream-json", "--verbose",
+        "--json-schema", json.dumps(schema, ensure_ascii=False),
+        "--no-session-persistence", "--disable-slash-commands", "--strict-mcp-config",
+        "--setting-sources", "",
+    ]
+    last_err = ""
+    for attempt in range(2):
+        try:
+            out = _run_cli(cmd, _cli_message(body), timeout)
+        except FileNotFoundError as e:
+            raise GuideError("claude コマンドが見つかりません。Claude Code をインストールしてください。") from e
+        if out is None:
+            last_err = f"{timeout:.0f}秒たっても応答がありませんでした"
+            continue
+        stdout, stderr = out
+        result = None
+        for line in stdout.splitlines():
+            try:
+                ev = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if ev.get("type") == "result":
+                result = ev
+        if result and not result.get("is_error") and isinstance(result.get("structured_output"), dict) \
+                and required_key in result["structured_output"]:
+            u = result.get("usage", {})
+            return result["structured_output"], {
+                "input_tokens": u.get("input_tokens", 0) + u.get("cache_creation_input_tokens", 0)
+                + u.get("cache_read_input_tokens", 0),
+                "output_tokens": u.get("output_tokens", 0)}
+        last_err = (result or {}).get("result") or stderr.strip()[-200:] or "出力が空でした"
+    raise GuideError(f"Claude CLIから答えを受け取れませんでした: {last_err}")
+
+
 def call_tool(body, api_key, required_key, retry_hint):
     """ツール呼び出しで構造化された答えを得る（ガイド・やさしい表示で共用）。
 
@@ -171,6 +267,8 @@ def call_tool(body, api_key, required_key, retry_hint):
     - ツールを呼ばず文章で返した・中身が空（required_key なし）の場合は、1回だけ促し直す
     戻り値: (ツール入力の dict, {"input_tokens": n, "output_tokens": n})
     """
+    if backend() == "cli":
+        return _call_tool_cli(body, required_key)
     try:
         res = _post(body, api_key)
     except GuideError as e:
@@ -228,9 +326,7 @@ def ask_guide(page, goal="", history=None, model="haiku", screenshot=None, mock=
             "usage": {"input_tokens": 0, "output_tokens": 0}, "latency": 0.0,
         }
 
-    api_key = load_api_key()
-    if not api_key:
-        raise GuideError("APIキーが未設定です。環境変数 ANTHROPIC_API_KEY か .env を設定してください。")
+    api_key = ensure_credentials()
 
     content = []
     if screenshot:

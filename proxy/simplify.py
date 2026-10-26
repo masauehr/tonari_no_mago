@@ -96,9 +96,7 @@ def simplify(doc, model="haiku", mock=False):
     if mock:
         out, usage, model_id = _mock(doc), {"input_tokens": 0, "output_tokens": 0}, "mock"
     else:
-        api_key = core.load_api_key()
-        if not api_key:
-            raise core.GuideError("APIキーが未設定です。環境変数 ANTHROPIC_API_KEY か .env を設定してください。")
+        api_key = core.ensure_credentials()
         model_id = core.resolve_model(model)
         body = {
             "model": model_id,
