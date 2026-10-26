@@ -117,7 +117,7 @@ def main():
     mode = ("mock" if args.mock else args.model) + ("+shot" if args.shot else "")
     summary = {
         "mode": mode, "total": len(results), "errors": len(results) - len(done),
-        "correct": correct, "accuracy": round(correct / max(len(done), 1), 3),
+        "correct": correct, "accuracy": round(correct / max(len(results), 1), 3),  # エラーも不正解として数える
         "caution_ok": f"{sum(r['caution_ok'] for r in cautions)}/{len(cautions)}",
         "avg_latency_s": round(lat, 2), "input_tokens": tin, "output_tokens": tout,
     }

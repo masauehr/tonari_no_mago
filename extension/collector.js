@@ -61,7 +61,8 @@
   // 入力済みか（値そのものは返さない）
   const filledOf = (el) => {
     const tag = el.tagName.toLowerCase();
-    if (tag === 'select') return el.selectedIndex > 0 && el.value !== '';
+    // 先頭が最初から選ばれているプルダウン（数量など）は入力済み。空値の案内行だけが未入力
+    if (tag === 'select') return el.value !== '';
     if (tag === 'input' && el.type === 'checkbox') return el.checked;
     if (tag === 'input' && el.type === 'radio') {
       if (!el.name) return el.checked;
@@ -121,6 +122,7 @@
         rec.required = el.required;
         rec.filled = filledOf(el);
         if (rec.kind === '選択肢' && el.name) rec.group = el.name;
+        if (['選択肢', 'チェック'].includes(rec.kind) && el.checked) rec.checked = true;
       }
       if (el.disabled) rec.disabled = true;
       if (!inViewport(el)) rec.offscreen = true;

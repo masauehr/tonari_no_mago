@@ -1,0 +1,403 @@
+{
+  "summary": {
+    "mode": "sonnet",
+    "total": 20,
+    "errors": 0,
+    "correct": 20,
+    "accuracy": 1.0,
+    "caution_ok": "3/3",
+    "avg_latency_s": 3.21,
+    "input_tokens": 44145,
+    "output_tokens": 4775
+  },
+  "results": [
+    {
+      "id": "a_top",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "go-yoyaku",
+      "expected": [
+        "#go-yoyaku"
+      ],
+      "reason": "「手続きの予約」の「予約へ進む」を押します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 2.03,
+      "usage": {
+        "input_tokens": 2186,
+        "output_tokens": 162
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_menu",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "book-tenyu",
+      "expected": [
+        "#book-tenyu"
+      ],
+      "reason": "転入届の行にある「予約する」を押します",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 1.94,
+      "usage": {
+        "input_tokens": 2109,
+        "output_tokens": 156
+      },
+      "n_elements": 14
+    },
+    {
+      "id": "a_date_empty",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "d1",
+      "expected": [
+        "#d1",
+        "#d2",
+        "#d3"
+      ],
+      "reason": "まず希望日の「11月4日(水)」を押して選びます。",
+      "confidence": "medium",
+      "caution": "",
+      "ask_human": false,
+      "latency": 2.62,
+      "usage": {
+        "input_tokens": 2097,
+        "output_tokens": 226
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_date_half",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "time",
+      "expected": [
+        "#time"
+      ],
+      "reason": "希望時間のプルダウンを押して、時間を選びます。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 1.96,
+      "usage": {
+        "input_tokens": 2108,
+        "output_tokens": 162
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_date_all",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "next",
+      "expected": [
+        "#next"
+      ],
+      "reason": "日と時間は選べています。「次へ」を押します。",
+      "confidence": "medium",
+      "caution": "",
+      "ask_human": false,
+      "latency": 4.07,
+      "usage": {
+        "input_tokens": 2109,
+        "output_tokens": 400
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_form_empty",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "name",
+      "expected": [
+        "#name"
+      ],
+      "reason": "まず「氏名」の欄に、お名前を入力します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 2.01,
+      "usage": {
+        "input_tokens": 2076,
+        "output_tokens": 161
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_form_filled",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "confirm",
+      "expected": [
+        "#confirm"
+      ],
+      "reason": "必須の項目は済んでいます。「確認画面へ」を押します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 2.04,
+      "usage": {
+        "input_tokens": 2087,
+        "output_tokens": 165
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_confirm",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "submit",
+      "expected": [
+        "#submit"
+      ],
+      "reason": "内容に間違いがなければ「予約を確定する」を押します",
+      "confidence": "high",
+      "caution": "押す前に日時・氏名などの内容をよく確認してください",
+      "ask_human": false,
+      "latency": 2.11,
+      "usage": {
+        "input_tokens": 1944,
+        "output_tokens": 183
+      },
+      "n_elements": 12
+    },
+    {
+      "id": "b_top",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "cat-rice",
+      "expected": [
+        "#cat-rice"
+      ],
+      "reason": "お米の商品を探すため、「お米」を押します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 2.48,
+      "usage": {
+        "input_tokens": 2212,
+        "output_tokens": 159
+      },
+      "n_elements": 21
+    },
+    {
+      "id": "b_item",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "addcart",
+      "expected": [
+        "#addcart",
+        "#buynow"
+      ],
+      "reason": "数量は1のままで、「カートに入れる」を押します。",
+      "confidence": "medium",
+      "caution": "",
+      "ask_human": false,
+      "latency": 7.67,
+      "usage": {
+        "input_tokens": 4639,
+        "output_tokens": 562
+      },
+      "n_elements": 18
+    },
+    {
+      "id": "b_cart",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "checkout",
+      "expected": [
+        "#checkout"
+      ],
+      "reason": "新米5kgがカートに入っています。「レジに進む」を押します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 2.28,
+      "usage": {
+        "input_tokens": 2085,
+        "output_tokens": 165
+      },
+      "n_elements": 18
+    },
+    {
+      "id": "b_ship_empty",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "name",
+      "expected": [
+        "#name"
+      ],
+      "reason": "お名前の欄に、お名前を入力します",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 5.74,
+      "usage": {
+        "input_tokens": 2223,
+        "output_tokens": 156
+      },
+      "n_elements": 21
+    },
+    {
+      "id": "b_ship_text",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "pay-cod",
+      "expected": [
+        "#pay-cod",
+        "#pay-card",
+        "#pay-bank"
+      ],
+      "reason": "お支払い方法がまだです。「代金引換」を押して選びます。",
+      "confidence": "medium",
+      "caution": "",
+      "ask_human": false,
+      "latency": 4.71,
+      "usage": {
+        "input_tokens": 2227,
+        "output_tokens": 361
+      },
+      "n_elements": 21
+    },
+    {
+      "id": "b_ship_all",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "to-confirm",
+      "expected": [
+        "#to-confirm"
+      ],
+      "reason": "必要な項目は入力済みです。「注文内容を確認する」を押します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 3.51,
+      "usage": {
+        "input_tokens": 2238,
+        "output_tokens": 307
+      },
+      "n_elements": 21
+    },
+    {
+      "id": "b_confirm",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "order",
+      "expected": [
+        "#order"
+      ],
+      "reason": "内容が合っていれば「注文を確定する」を押します",
+      "confidence": "high",
+      "caution": "押す前に、商品・お支払い方法・合計金額をよく確認してください",
+      "ask_human": false,
+      "latency": 2.91,
+      "usage": {
+        "input_tokens": 2016,
+        "output_tokens": 186
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "c_account",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "plan-link",
+      "expected": [
+        "#plan-link"
+      ],
+      "reason": "ご契約内容の「確認する」を押します。解約はここからです。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 3.07,
+      "usage": {
+        "input_tokens": 2047,
+        "output_tokens": 164
+      },
+      "n_elements": 15
+    },
+    {
+      "id": "c_plan",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "cancel-link",
+      "expected": [
+        "#cancel-link"
+      ],
+      "reason": "「解約手続きへ進む」を押します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 2.32,
+      "usage": {
+        "input_tokens": 1924,
+        "output_tokens": 156
+      },
+      "n_elements": 13
+    },
+    {
+      "id": "c_reason_empty",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "r1",
+      "expected": [
+        "#r1",
+        "#r2",
+        "#r3",
+        "#r4"
+      ],
+      "reason": "まず必須の理由欄で「料金が高い」を選びます",
+      "confidence": "medium",
+      "caution": "",
+      "ask_human": false,
+      "latency": 4.14,
+      "usage": {
+        "input_tokens": 1989,
+        "output_tokens": 389
+      },
+      "n_elements": 15
+    },
+    {
+      "id": "c_reason_filled",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "continue",
+      "expected": [
+        "#continue"
+      ],
+      "reason": "理由は選んであります。「解約を続ける」を押します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 4.02,
+      "usage": {
+        "input_tokens": 2001,
+        "output_tokens": 368
+      },
+      "n_elements": 15
+    },
+    {
+      "id": "c_final",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "do-cancel",
+      "expected": [
+        "#do-cancel"
+      ],
+      "reason": "「解約を確定する」を押します。",
+      "confidence": "high",
+      "caution": "押す前に内容をよく確認してください。お気に入りリストと視聴履歴は削除されます。",
+      "ask_human": false,
+      "latency": 2.48,
+      "usage": {
+        "input_tokens": 1828,
+        "output_tokens": 187
+      },
+      "n_elements": 11
+    }
+  ]
+}
