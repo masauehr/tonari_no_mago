@@ -228,3 +228,10 @@ $('scam-page-btn').addEventListener('click', () => runScam($('scam-page-btn'), a
     throw new Error('このページでは使えません。ふつうのホームページで試してください。');
   }
 }));
+
+// 貼り付けた文と判定結果を消す（他の人に見られないように）
+$('scam-clear-btn').addEventListener('click', () => {
+  $('scam-text').value = '';
+  $('scam-result').innerHTML = '';
+  $('scam-text').focus();
+});
