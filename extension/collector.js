@@ -157,5 +157,13 @@
     };
   };
 
+  // やさしい表示用：本文を取り出す（main / article を優先。入力欄の値は含まれない）
+  const extract = () => {
+    const root = document.querySelector('main, article, [role="main"]') || document.body;
+    const text = (root.innerText || '').replace(/\n{3,}/g, '\n\n').trim();
+    return { title: document.title, text: text.slice(0, 6000), truncated: text.length > 6000 };
+  };
+
   window.__tnmCollect = collect;
+  window.__tnmExtract = extract;
 })();

@@ -164,6 +164,41 @@ class GuideError(Exception):
     """利用者に見せられる形のエラー。"""
 
 
+def call_tool(body, api_key, required_key, retry_hint):
+    """ツール呼び出しで構造化された答えを得る（ガイド・やさしい表示で共用）。
+
+    - tool_choice の強制に対応しないモデル（Sonnet等）は、自動指定にして再試行する
+    - ツールを呼ばず文章で返した・中身が空（required_key なし）の場合は、1回だけ促し直す
+    戻り値: (ツール入力の dict, {"input_tokens": n, "output_tokens": n})
+    """
+    try:
+        res = _post(body, api_key)
+    except GuideError as e:
+        if "tool_choice" not in str(e):
+            raise
+        body["tool_choice"] = {"type": "auto"}
+        res = _post(body, api_key)
+
+    def find_tool(r):
+        return next((b["input"] for b in r.get("content", [])
+                     if b.get("type") == "tool_use" and required_key in b.get("input", {})), None)
+
+    usage = dict(res.get("usage", {}))
+    out = find_tool(res)
+    if out is None and body["tool_choice"]["type"] == "auto":
+        body["messages"] = body["messages"] + [
+            {"role": "assistant", "content": res.get("content") or [{"type": "text", "text": "…"}]},
+            {"role": "user", "content": retry_hint},
+        ]
+        res2 = _post(body, api_key)
+        out = find_tool(res2)
+        for k in ("input_tokens", "output_tokens"):
+            usage[k] = usage.get(k, 0) + res2.get("usage", {}).get(k, 0)
+    if out is None:
+        raise GuideError("Claudeから答えを受け取れませんでした。もう一度お試しください。")
+    return out, {"input_tokens": usage.get("input_tokens", 0), "output_tokens": usage.get("output_tokens", 0)}
+
+
 def _mock_guidance(page, goal):
     """APIなしで流れを確認するための簡易ダミー（目的の語に当たる要素、なければ最初のボタン）。"""
     words = [w for w in re.split(r"[\s、。]+", goal or "") if len(w) >= 2]
@@ -213,33 +248,8 @@ def ask_guide(page, goal="", history=None, model="haiku", screenshot=None, mock=
         "tool_choice": {"type": "tool", "name": TOOL["name"]},
         "messages": [{"role": "user", "content": content}],
     }
-    try:
-        res = _post(body, api_key)
-    except GuideError as e:
-        # tool_choice の強制に対応しないモデル（Sonnet等）は、自動指定にして再試行する
-        if "tool_choice" not in str(e):
-            raise
-        body["tool_choice"] = {"type": "auto"}
-        res = _post(body, api_key)
-
-    def find_tool(r):
-        # 中身が空のツール結果（target_id なし）は無効として扱う
-        return next((b["input"] for b in r.get("content", [])
-                     if b.get("type") == "tool_use" and "target_id" in b.get("input", {})), None)
-
-    out = find_tool(res)
-    if out is None and body["tool_choice"]["type"] == "auto":
-        # ツールを呼ばず文章で返したモデルには、1回だけ促し直す
-        body["messages"] = body["messages"] + [
-            {"role": "assistant", "content": res.get("content") or [{"type": "text", "text": "…"}]},
-            {"role": "user", "content": "迷う場合も、最も自然な次の一手を選び、record_guidance ツールで答えてください。"},
-        ]
-        res2 = _post(body, api_key)
-        out = find_tool(res2)
-        for k in ("input_tokens", "output_tokens"):
-            res.setdefault("usage", {})[k] = res.get("usage", {}).get(k, 0) + res2.get("usage", {}).get(k, 0)
-    if out is None:
-        raise GuideError("Claudeから案内を受け取れませんでした。もう一度お試しください。")
+    out, usage = call_tool(body, api_key, required_key="target_id",
+                           retry_hint="迷う場合も、最も自然な次の一手を選び、record_guidance ツールで答えてください。")
 
     tid = out.get("target_id")
     if tid is not None and tid not in ids:
@@ -247,7 +257,6 @@ def ask_guide(page, goal="", history=None, model="haiku", screenshot=None, mock=
         tid = None
         out["ask_human"] = True
         out["reason"] = "うまく見つけられませんでした。窓口やご家族に確認しましょう"
-    usage = res.get("usage", {})
     return {
         "target_id": tid,
         "reason": out.get("reason", ""),
@@ -255,7 +264,6 @@ def ask_guide(page, goal="", history=None, model="haiku", screenshot=None, mock=
         "caution": out.get("caution", ""),
         "ask_human": bool(out.get("ask_human", tid is None)),
         "model": model_id,
-        "usage": {"input_tokens": usage.get("input_tokens", 0),
-                  "output_tokens": usage.get("output_tokens", 0)},
+        "usage": usage,
         "latency": round(time.time() - started, 2),
     }

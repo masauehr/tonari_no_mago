@@ -16,6 +16,16 @@
 
   <div id="result" role="status" aria-live="polite"></div>
 
+  <button id="easy-btn" type="button">やさしく表示</button>
+  <div id="easy" hidden>
+    <div class="easy-tools">
+      <button id="font-minus" type="button" aria-label="文字を小さくする">A−</button>
+      <button id="font-plus" type="button" aria-label="文字を大きくする">A＋</button>
+      <button id="speak" type="button">読み上げ</button>
+    </div>
+    <div id="easy-body"></div>
+  </div>
+
   <details>
     <summary>設定</summary>
     <label><input id="strong" type="checkbox"> 難しい画面向けに、くわしく調べる（時間がかかります）</label>

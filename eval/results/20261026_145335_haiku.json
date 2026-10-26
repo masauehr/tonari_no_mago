@@ -1,0 +1,188 @@
+{
+  "summary": {
+    "mode": "haiku",
+    "total": 9,
+    "errors": 0,
+    "correct": 9,
+    "accuracy": 1.0,
+    "caution_ok": "1/1",
+    "avg_latency_s": 1.55,
+    "input_tokens": 20964,
+    "output_tokens": 1395
+  },
+  "results": [
+    {
+      "id": "a_top",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "go-yoyaku",
+      "expected": [
+        "#go-yoyaku"
+      ],
+      "reason": "転入届の予約をしたいので、「予約へ進む」を押します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 3.13,
+      "usage": {
+        "input_tokens": 2428,
+        "output_tokens": 148
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_menu",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "book-tenyu",
+      "expected": [
+        "#book-tenyu"
+      ],
+      "reason": "転入届の「予約する」を押します。引っ越してきたときの手続きです。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 1.95,
+      "usage": {
+        "input_tokens": 2351,
+        "output_tokens": 151
+      },
+      "n_elements": 14
+    },
+    {
+      "id": "a_date_empty",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "d1",
+      "expected": [
+        "#d1",
+        "#d2",
+        "#d3"
+      ],
+      "reason": "まず希望日を選びます。「11月4日(水)」を押してください。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 1.18,
+      "usage": {
+        "input_tokens": 2339,
+        "output_tokens": 148
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_date_half",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "time",
+      "expected": [
+        "#time"
+      ],
+      "reason": "希望時間が未選択です。「希望時間」のプルダウンを押して、時間を選びます。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 1.28,
+      "usage": {
+        "input_tokens": 2350,
+        "output_tokens": 157
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_date_all",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "next",
+      "expected": [
+        "#next"
+      ],
+      "reason": "希望日と時間が入っているので、「次へ」を押します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 1.21,
+      "usage": {
+        "input_tokens": 2351,
+        "output_tokens": 145
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_form_empty",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "name",
+      "expected": [
+        "#name"
+      ],
+      "reason": "まず「氏名」の入力欄を押します。そこに、お名前を入力します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 1.56,
+      "usage": {
+        "input_tokens": 2318,
+        "output_tokens": 152
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_form_filled",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "confirm",
+      "expected": [
+        "#confirm"
+      ],
+      "reason": "必須の項目はすべて入力済みなので、「確認画面へ」を押します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 0.99,
+      "usage": {
+        "input_tokens": 2329,
+        "output_tokens": 152
+      },
+      "n_elements": 16
+    },
+    {
+      "id": "a_confirm",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "submit",
+      "expected": [
+        "#submit"
+      ],
+      "reason": "内容に間違いがなければ、「予約を確定する」を押します。",
+      "confidence": "high",
+      "caution": "押す前に内容をよく確認してください。日時は11月4日(水) 10:00、手続きは転入届で合っていますか。",
+      "ask_human": false,
+      "latency": 1.27,
+      "usage": {
+        "input_tokens": 2186,
+        "output_tokens": 190
+      },
+      "n_elements": 12
+    },
+    {
+      "id": "a_form_empty_nogoal",
+      "ok": true,
+      "caution_ok": true,
+      "chosen": "name",
+      "expected": [
+        "#name"
+      ],
+      "reason": "まず「氏名」の入力欄を選びます。ここにお名前を入力します。",
+      "confidence": "high",
+      "caution": "",
+      "ask_human": false,
+      "latency": 1.42,
+      "usage": {
+        "input_tokens": 2312,
+        "output_tokens": 152
+      },
+      "n_elements": 16
+    }
+  ]
+}

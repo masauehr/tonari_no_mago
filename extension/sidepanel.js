@@ -88,3 +88,80 @@ $('help').addEventListener('click', async () => {
 
 // やりたいことを変えたら、これまでの案内の履歴は捨てる
 $('goal').addEventListener('input', () => { history.length = 0; });
+
+// ---------- やさしく表示 ----------
+const section = (title, inner, cls = '') => (inner ? `<h2>${esc(title)}</h2><div class="${cls}">${inner}</div>` : '');
+const list = (tag, items) => (items.length ? `<${tag}>${items.map((x) => `<li>${esc(x)}</li>`).join('')}</${tag}>` : '');
+
+const renderEasy = (r) => {
+  const parts = [];
+  if (r.ask_human) parts.push(`<div class="human">${esc(r.human_note || '窓口や専門家に相談しましょう')}</div>`);
+  parts.push(`<div class="summary">${esc(r.summary)}</div>`);
+  parts.push(section('いつまでに',
+    r.deadlines.map((d) => `<div class="deadline">${esc(d.what)}：${esc(d.when)}</div>`).join('')));
+  parts.push(section('やること', list('ol', r.todo)));
+  parts.push(section('持っていくもの', list('ul', r.bring)));
+  parts.push(section('大事なところ', list('ul', r.key_points)));
+  parts.push(section('気をつけること', list('ul', r.cautions), 'cautions'));
+  $('easy-body').innerHTML = parts.join('');
+  $('easy').hidden = false;
+};
+
+// 読み上げ用の文章（見出しをつけて順に読む）
+const speechText = (r) => [
+  r.summary,
+  r.deadlines.length ? 'いつまでに。' + r.deadlines.map((d) => `${d.what}は${d.when}`).join('。') : '',
+  r.todo.length ? 'やること。' + r.todo.join('。') : '',
+  r.bring.length ? '持っていくもの。' + r.bring.join('、') : '',
+  r.cautions.length ? '気をつけること。' + r.cautions.join('。') : ''
+].filter(Boolean).join('。\n');
+
+let lastEasy = null;
+
+$('easy-btn').addEventListener('click', async () => {
+  const btn = $('easy-btn');
+  btn.disabled = true;
+  show('文章を読んでいます…');
+  speechSynthesis.cancel();
+  try {
+    const tab = await activeTab();
+    let doc;
+    try {
+      await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['collector.js'] });
+      [{ result: doc }] = await chrome.scripting.executeScript({
+        target: { tabId: tab.id }, func: () => window.__tnmExtract()
+      });
+    } catch (e) {
+      throw new Error('このページでは使えません。ふつうのホームページで試してください。');
+    }
+    const res = await fetch(`${PROXY}/simplify`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: doc.title, text: doc.text, model: $('strong').checked ? 'sonnet' : 'haiku' })
+    }).catch(() => { throw new Error('中継プログラムに接続できません。ご家族に proxy/server.py の起動を確認してもらってください。'); });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'やさしい表示を作れませんでした。');
+    lastEasy = json;
+    renderEasy(json);
+    show(doc.truncated ? '<span class="sub">長い文章なので、最初の部分だけ読みました。</span>' : '');
+  } catch (e) {
+    show(`<span class="error">${esc(e.message)}</span>`);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// 文字サイズ（16〜40px）
+let easySize = 20;
+const applySize = () => $('easy').style.setProperty('--easy-size', easySize + 'px');
+$('font-plus').addEventListener('click', () => { easySize = Math.min(40, easySize + 4); applySize(); });
+$('font-minus').addEventListener('click', () => { easySize = Math.max(16, easySize - 4); applySize(); });
+
+// 読み上げ（もう一度押すと止まる）
+$('speak').addEventListener('click', () => {
+  if (speechSynthesis.speaking) { speechSynthesis.cancel(); return; }
+  if (!lastEasy) return;
+  const u = new SpeechSynthesisUtterance(speechText(lastEasy));
+  u.lang = 'ja-JP';
+  u.rate = 0.9;
+  speechSynthesis.speak(u);
+});

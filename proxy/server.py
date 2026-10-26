@@ -17,6 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import core  # noqa: E402
+import simplify  # noqa: E402
 
 HOST = "127.0.0.1"
 PORT = 8787
@@ -65,10 +66,18 @@ class Handler(BaseHTTPRequestHandler):
                                     "has_key": bool(core.load_api_key())})
         self._send(404, {"error": "見つかりません"})
 
+    def _simplify(self, req, started):
+        doc = {"title": str(req.get("title", ""))[:200], "text": str(req["text"])}
+        result = simplify.simplify(doc, model=req.get("model", "haiku"), mock=self.mock)
+        usage = result["usage"]
+        print(f"POST /simplify 200 {time.time() - started:.1f}s "
+              f"in={usage['input_tokens']} out={usage['output_tokens']} model={result['model']}", flush=True)
+        self._send(200, result)
+
     def do_POST(self):
         if not self._origin_ok():
             return self._send(403, {"error": "許可されていない呼び出し元です"})
-        if self.path != "/guide":
+        if self.path not in ("/guide", "/simplify"):
             return self._send(404, {"error": "見つかりません"})
         length = int(self.headers.get("Content-Length") or 0)
         if length <= 0 or length > MAX_BODY:
@@ -76,6 +85,8 @@ class Handler(BaseHTTPRequestHandler):
         started = time.time()
         try:
             req = json.loads(self.rfile.read(length).decode("utf-8"))
+            if self.path == "/simplify":
+                return self._simplify(req, started)
             page = req["page"]
             if not isinstance(page.get("elements"), list):
                 raise ValueError("elements がありません")
@@ -93,10 +104,10 @@ class Handler(BaseHTTPRequestHandler):
                   flush=True)
             self._send(200, result)
         except core.GuideError as e:
-            print(f"POST /guide 502 {e}", flush=True)
+            print(f"POST {self.path} 502 {e}", flush=True)
             self._send(502, {"error": str(e)})
         except (KeyError, ValueError, json.JSONDecodeError) as e:
-            print(f"POST /guide 400 {type(e).__name__}", flush=True)
+            print(f"POST {self.path} 400 {type(e).__name__}", flush=True)
             self._send(400, {"error": "送られたデータの形が正しくありません"})
 
 

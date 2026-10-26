@@ -38,3 +38,25 @@ h1 { margin: 0 0 12px; font-size: 24px; }
 details { margin-top: 24px; font-size: 16px; }
 details label { display: block; margin: 8px 0; }
 .note { font-size: 14px; color: #555; }
+
+/* やさしく表示 */
+#easy-btn {
+  display: block; width: 100%; margin: 8px 0 16px; padding: 16px 0;
+  font-size: 24px; font-weight: bold; color: #fff; background: #1a4fd6;
+  border: none; border-radius: 14px; cursor: pointer;
+}
+#easy-btn:disabled { background: #bbb; cursor: wait; }
+#easy-btn:focus-visible { outline: 4px solid #ff6a00; outline-offset: 3px; }
+#easy { --easy-size: 20px; font-size: var(--easy-size); line-height: 1.8; }
+.easy-tools { display: flex; gap: 8px; margin-bottom: 12px; }
+.easy-tools button {
+  flex: 1; padding: 10px 0; font-size: 18px; background: #fff;
+  border: 2px solid #888; border-radius: 8px; cursor: pointer;
+}
+#easy h2 { margin: 18px 0 6px; font-size: 1em; padding-left: 8px; border-left: 6px solid #1a4fd6; }
+#easy .summary { background: #fff3e0; border: 3px solid #ff6a00; border-radius: 10px; padding: 12px; font-weight: bold; }
+#easy ul, #easy ol { margin: 0; padding-left: 1.4em; }
+#easy li { margin: 4px 0; }
+#easy .deadline { background: #fde8e8; border-radius: 8px; padding: 8px 12px; margin: 6px 0; font-weight: bold; }
+#easy .cautions li { color: #b00020; }
+#easy .human { background: #fff9c4; border: 2px solid #b8a000; border-radius: 8px; padding: 10px; }
